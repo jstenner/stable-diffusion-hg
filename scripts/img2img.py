@@ -10,7 +10,7 @@ from tqdm import tqdm, trange
 from itertools import islice
 from einops import rearrange, repeat
 from torchvision.utils import make_grid
-from torch import autocast
+from torch.cuda.amp import autocast
 from contextlib import nullcontext
 import time
 from pytorch_lightning import seed_everything
@@ -242,7 +242,7 @@ def main():
 
     precision_scope = autocast if opt.precision == "autocast" else nullcontext
     with torch.no_grad():
-        with precision_scope("cuda"):
+        with precision_scope(True):
             with model.ema_scope():
                 tic = time.time()
                 all_samples = list()
